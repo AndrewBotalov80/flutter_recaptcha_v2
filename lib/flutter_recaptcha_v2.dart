@@ -18,6 +18,9 @@ class RecaptchaV2 extends StatefulWidget {
   final ValueChanged<bool> onVerifiedSuccessfully;
   final ValueChanged<String> onVerifiedError;
 
+  final ValueChanged<String> onTokenCreated;
+  final bool verifyTokenOnSuccess;
+
   RecaptchaV2({
     this.apiKey,
     this.apiSecret,
@@ -27,6 +30,8 @@ class RecaptchaV2 extends StatefulWidget {
     RecaptchaV2Controller controller,
     this.onVerifiedSuccessfully,
     this.onVerifiedError,
+    @required this.onTokenCreated,
+    this.verifyTokenOnSuccess = false,
   })  : controller = controller ?? RecaptchaV2Controller(),
         assert(apiKey != null, "Google ReCaptcha API KEY is missing."),
         assert(apiSecret != null, "Google ReCaptcha API SECRET is missing.");
@@ -40,6 +45,11 @@ class _RecaptchaV2State extends State<RecaptchaV2> {
   WebViewController webViewController;
 
   void verifyToken(String token) async {
+    widget.onTokenCreated(token);
+    if (!widget.verifyTokenOnSuccess) {
+      return;
+    }
+
     String url = "https://www.google.com/recaptcha/api/siteverify";
     http.Response response = await http.post(Uri.parse(url), body: {
       "secret": widget.apiSecret,

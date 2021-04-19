@@ -57,8 +57,11 @@ class _MyHomePageState extends State<MyHomePage> {
             apiKey: "6LeCwZYUAAAAAJo8IVvGX9dH65Rw89vxaxErCeou",
             apiSecret: "6LeCwZYUAAAAAKGahIjwfOARevvRETgvwhPMKCs_",
             controller: recaptchaV2Controller,
-            onVerifiedError: (err){
+            onVerifiedError: (err) {
               print(err);
+            },
+            onTokenCreated: (token) {
+              print(token);
             },
             onVerifiedSuccessfully: (success) {
               setState(() {
