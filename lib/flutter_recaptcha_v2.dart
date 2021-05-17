@@ -15,22 +15,22 @@ class RecaptchaV2 extends StatefulWidget {
   bool visibleCancelBottom;
   String textCancelButtom;
 
-  final ValueChanged<bool> onVerifiedSuccessfully;
-  final ValueChanged<String> onVerifiedError;
+  final ValueChanged<bool>? onVerifiedSuccessfully;
+  final ValueChanged<String?>? onVerifiedError;
 
   final ValueChanged<String> onTokenCreated;
   final bool verifyTokenOnSuccess;
 
   RecaptchaV2({
-    this.apiKey,
-    this.apiSecret,
+    required this.apiKey,
+    required this.apiSecret,
     this.pluginURL: "https://recaptcha-flutter-plugin.firebaseapp.com/",
     this.visibleCancelBottom: false,
     this.textCancelButtom: "CANCEL CAPTCHA",
-    RecaptchaV2Controller controller,
+    RecaptchaV2Controller? controller,
     this.onVerifiedSuccessfully,
     this.onVerifiedError,
-    @required this.onTokenCreated,
+    required this.onTokenCreated,
     this.verifyTokenOnSuccess = false,
   })  : controller = controller ?? RecaptchaV2Controller(),
         assert(apiKey != null, "Google ReCaptcha API KEY is missing."),
@@ -41,8 +41,8 @@ class RecaptchaV2 extends StatefulWidget {
 }
 
 class _RecaptchaV2State extends State<RecaptchaV2> {
-  RecaptchaV2Controller controller;
-  WebViewController webViewController;
+  late RecaptchaV2Controller controller;
+  WebViewController? webViewController;
 
   void verifyToken(String token) async {
     widget.onTokenCreated(token);
@@ -59,10 +59,10 @@ class _RecaptchaV2State extends State<RecaptchaV2> {
     if (response.statusCode == 200) {
       dynamic json = jsonDecode(response.body);
       if (json['success']) {
-        widget.onVerifiedSuccessfully(true);
+        widget.onVerifiedSuccessfully!(true);
       } else {
-        widget.onVerifiedSuccessfully(false);
-        widget.onVerifiedError(json['error-codes'].toString());
+        widget.onVerifiedSuccessfully!(false);
+        widget.onVerifiedError!(json['error-codes'].toString());
       }
     }
 
@@ -73,8 +73,8 @@ class _RecaptchaV2State extends State<RecaptchaV2> {
   void onListen() {
     if (controller.visible) {
       if (webViewController != null) {
-        webViewController.clearCache();
-        webViewController.reload();
+        webViewController!.clearCache();
+        webViewController!.reload();
       }
     }
     setState(() {
